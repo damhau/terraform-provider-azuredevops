@@ -405,11 +405,11 @@ func deleteProject(clients *client.AggregatedClient, id string, timeoutSeconds t
 
 // Convert internal Terraform data structure to an AzDO data structure
 func expandProject(clients *client.AggregatedClient, d *schema.ResourceData, forCreate bool) (*core.TeamProject, error) {
-	workItemTemplate := d.Get("work_item_template").(string)
-	processTemplateID, err := lookupProcessTemplateID(clients, workItemTemplate)
-	if err != nil {
-		return nil, err
-	}
+	// workItemTemplate := d.Get("work_item_template").(string)
+	// processTemplateID, err := lookupProcessTemplateID(clients, workItemTemplate)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// an "error" is OK here as it is expected in the case that the ID is not set in the resource data
 	var projectID *uuid.UUID
@@ -427,7 +427,7 @@ func expandProject(clients *client.AggregatedClient, d *schema.ResourceData, for
 				"sourceControlType": d.Get("version_control").(string),
 			},
 			"processTemplate": {
-				"templateTypeId": processTemplateID,
+				"templateTypeId": "929e9bd0-3749-4901-b6db-d596fa5ff6e3",
 			},
 		}
 	}
@@ -444,12 +444,12 @@ func expandProject(clients *client.AggregatedClient, d *schema.ResourceData, for
 }
 
 func flattenProject(clients *client.AggregatedClient, d *schema.ResourceData, project *core.TeamProject) error {
-	processTemplateID := (*project.Capabilities)["processTemplate"]["templateTypeId"]
-	processTemplateName, err := lookupProcessTemplateName(clients, processTemplateID)
+	// processTemplateID := (*project.Capabilities)["processTemplate"]["templateTypeId"]
+	// processTemplateName, err := lookupProcessTemplateName(clients, processTemplateID)
 
-	if err != nil {
-		return err
-	}
+	// if err != nil {
+	// 	return err
+	// }
 
 	var currentFeatureStates *map[ProjectFeatureType]featuremanagement.ContributedFeatureEnabledValue
 	features, ok := d.GetOk("features")
@@ -467,8 +467,8 @@ func flattenProject(clients *client.AggregatedClient, d *schema.ResourceData, pr
 	d.Set("visibility", project.Visibility)
 	d.Set("description", project.Description)
 	d.Set("version_control", (*project.Capabilities)["versioncontrol"]["sourceControlType"])
-	d.Set("process_template_id", processTemplateID)
-	d.Set("work_item_template", processTemplateName)
+	d.Set("process_template_id", "929e9bd0-3749-4901-b6db-d596fa5ff6e3")
+	d.Set("work_item_template", "toto")
 	d.Set("features", currentFeatureStates)
 
 	return nil
